@@ -25,7 +25,7 @@ from urllib.parse import urljoin, urlparse
 import httpx
 from bs4 import BeautifulSoup
 
-from .. import config
+from . import config
 
 TEXT_EXTENSIONS = {".txt", ".md", ".log", ".csv", ".json", ".xml", ".yml", ".yaml"}
 HTML_EXTENSIONS = {".html", ".htm", ".xhtml"}
