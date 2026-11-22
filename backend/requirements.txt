@@ -1,0 +1,12 @@
+# PromptShield AI — backend runtime dependencies
+# Deliberately light so the container fits a 1 vCPU / 1 GB RAM instance:
+# no torch/transformers, no compiled ML stack. The classifier is a pure-Python
+# logistic-regression model trained offline by backend/ml/train.py.
+fastapi>=0.115,<1.0
+uvicorn>=0.34,<1.0
+python-multipart>=0.0.20
+pydantic>=2.9,<3.0
+pypdf>=5.1,<7.0
+beautifulsoup4>=4.12,<5.0
+httpx>=0.28,<1.0
+pymongo>=4.10,<5.0
