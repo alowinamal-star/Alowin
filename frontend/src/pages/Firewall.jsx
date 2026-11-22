@@ -1,4 +1,4 @@
-import { Ban, CheckCircle2, Firewall as FirewallIcon, Play, RefreshCw, Save, ShieldAlert, ShieldCheck, Sliders, XCircle } from "lucide-react";
+import { Ban, CheckCircle2, ShieldHalf as FirewallIcon, Play, RefreshCw, Save, ShieldAlert, ShieldCheck, Sliders, XCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { api, formatDate, pretty } from "../api";
 import {

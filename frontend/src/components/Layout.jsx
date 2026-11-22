@@ -2,7 +2,7 @@ import {
   AlertTriangle,
   BarChart3,
   FileSearch,
-  Firewall as FirewallIcon,
+  ShieldHalf as FirewallIcon,
   FlaskConical,
   History as HistoryIcon,
   LayoutDashboard,
