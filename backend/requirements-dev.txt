@@ -2,4 +2,4 @@
 # Install together with the runtime set (no include directives, so the files
 # stay individually resolvable for scanning):
 #   pip install -r requirements.txt -r requirements-dev.txt
-pytest==8.3.5
+pytest==9.0.3
