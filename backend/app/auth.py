@@ -140,32 +140,42 @@ def decode_token(token: str) -> dict:
 # --------------------------------------------------------------------------
 # Users
 # --------------------------------------------------------------------------
-DEFAULT_USERS = [
-    {
-        "email": "admin@promptshield.ai",
-        "name": "Security Administrator",
-        "role": "admin",
-        "password": os.environ.get("SEED_ADMIN_PASSWORD", "Admin@12345"),
-    },
-    {
-        "email": "analyst@promptshield.ai",
-        "name": "SOC Analyst",
-        "role": "analyst",
-        "password": "Analyst@12345",
-    },
-    {
-        "email": "viewer@promptshield.ai",
-        "name": "Read-only Reviewer",
-        "role": "viewer",
-        "password": "Viewer@12345",
-    },
-]
+def _default_users() -> list[dict]:
+    """Seed accounts, driven entirely by configuration.
+
+    The admin account always exists; the analyst/viewer demo accounts can be
+    switched off with SEED_DEMO_USERS=0 for a locked-down deployment.
+    """
+    users = [
+        {
+            "email": config.SEED_ADMIN_EMAIL.lower(),
+            "name": "Security Administrator",
+            "role": "admin",
+            "password": config.SEED_ADMIN_PASSWORD,
+        }
+    ]
+    if config.SEED_DEMO_USERS:
+        users += [
+            {
+                "email": "analyst@promptshield.ai",
+                "name": "SOC Analyst",
+                "role": "analyst",
+                "password": config.SEED_DEMO_PASSWORD,
+            },
+            {
+                "email": "viewer@promptshield.ai",
+                "name": "Read-only Reviewer",
+                "role": "viewer",
+                "password": config.SEED_DEMO_PASSWORD,
+            },
+        ]
+    return users
 
 
 def seed_users() -> None:
     store = db.get_store()
     existing = {u["email"] for u in store.find("users", limit=1000)}
-    for seed in DEFAULT_USERS:
+    for seed in _default_users():
         if seed["email"] in existing:
             continue
         store.insert(
