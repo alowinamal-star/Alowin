@@ -219,6 +219,16 @@ def set_store(store: Store) -> None:
     _store = store
 
 
+def insert(collection: str, doc: dict) -> dict:
+    """Insert a document into the active store."""
+    return get_store().insert(collection, doc)
+
+
+def get(collection: str, doc_id: str) -> Optional[dict]:
+    """Fetch a single document by id from the active store."""
+    return get_store().get(collection, doc_id)
+
+
 def audit(actor: dict | str, action: str, detail: str = "", meta: Optional[dict] = None) -> dict:
     """Append a security audit event (who did what, when, from where)."""
     if isinstance(actor, dict):
