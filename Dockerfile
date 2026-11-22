@@ -1,8 +1,10 @@
 # syntax=docker/dockerfile:1
 # ---------------------------------------------------------------------------
-# PromptShield AI — single-container build.
+# PromptShield AI — single container.
 #   Stage 1 compiles the React/Vite dashboard.
 #   Stage 2 runs FastAPI, which serves /api/* and the built SPA on one port.
+# Only the paths the build actually needs are copied, so the host's
+# node_modules, caches and local SQLite data never enter the image.
 # ---------------------------------------------------------------------------
 
 # ---------- Stage 1: dashboard build ----------
@@ -11,7 +13,8 @@ RUN apk upgrade --no-cache
 WORKDIR /build
 COPY frontend/package.json frontend/package-lock.json ./
 RUN npm ci --no-audit --no-fund
-COPY frontend/ ./
+COPY frontend/index.html frontend/vite.config.js ./
+COPY frontend/src ./src
 RUN npm run build
 
 # ---------- Stage 2: API + SPA runtime ----------
@@ -23,12 +26,14 @@ ENV PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1
 
 COPY backend/requirements.txt ./requirements.txt
-# pymongo/bson ship no musl wheels, so compile them and drop the toolchain again.
+# pymongo/bson publish no musl wheels, so compile them and drop the toolchain.
 RUN apk add --no-cache --virtual .build-deps gcc musl-dev python3-dev libffi-dev \
     && pip install --no-cache-dir -r requirements.txt \
     && apk del .build-deps
 
-COPY backend/ ./backend/
+# Application code + the trained classifier artifact.
+COPY backend/app ./backend/app
+COPY backend/ml ./backend/ml
 COPY --from=frontend /build/dist ./backend/frontend_dist
 
 ENV PORT=8000 \
