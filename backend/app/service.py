@@ -252,7 +252,8 @@ def dashboard_statistics() -> dict:
         "average_risk_score": avg_risk,
         "firewall": {
             "actions_evaluated": len(actions),
-            "actions_blocked": len([a for a in actions if a.get("status") in {"blocked", "denied"}]),
+            "actions_blocked": len([a for a in actions if a.get("decision") == "block"]),
+            "actions_held": len([a for a in actions if a.get("decision") == "require_human_approval"]),
             "pending_approvals": len([a for a in approvals if a.get("status") == "pending"]),
             "approved": len([a for a in approvals if a.get("status") == "approved"]),
             "denied": len([a for a in approvals if a.get("status") == "denied"]),

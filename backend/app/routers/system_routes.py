@@ -21,7 +21,7 @@ def health() -> dict:
         "app": config.APP_NAME,
         "version": config.APP_VERSION,
         "storage": store.backend_name,
-        "storage_ready": store.healthy(),
+        "storage_ready": bool(store.health().get("ok")),
         "uptime_seconds": round(time.time() - _STARTED_AT, 1),
     }
 

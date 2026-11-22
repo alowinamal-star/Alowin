@@ -82,7 +82,7 @@ def seed_demo_scans() -> None:
             "user_role": "analyst",
             "source_scan_ids": [],
             "parameters": {
-                "to": "client-contact@partner-org.example",
+                "to": "security-lead@promptshield.ai",
                 "subject": "Quarterly pricing summary",
                 "body": "Pricing summary as requested by the account manager.",
                 "data_classification": "confidential",
