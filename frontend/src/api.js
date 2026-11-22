@@ -143,11 +143,13 @@ export const DECISION_LABEL = {
   quarantine: "Quarantined",
   block: "Blocked",
   require_approval: "Human approval required",
+  // Firewall decisions use this wording.
+  require_human_approval: "Human approval required",
 };
 
 export function decisionClass(decision) {
   if (decision === "block" || decision === "quarantine") return "badge-critical";
-  if (decision === "require_approval") return "badge-high";
+  if (decision === "require_approval" || decision === "require_human_approval") return "badge-high";
   if (decision === "flag") return "badge-medium";
   return "badge-low";
 }

@@ -26,10 +26,11 @@ const ACTION_TYPES = [
   { value: "search_knowledge_base", label: "search_knowledge_base — retrieval" },
 ];
 
+// Mirrors the API enum: Literal["user", "agent", "external_content"].
 const ORIGINS = [
-  { value: "user_request", label: "user_request — typed by the user" },
+  { value: "user", label: "user — typed by the user" },
   { value: "external_content", label: "external_content — inside a scanned document" },
-  { value: "agent_plan", label: "agent_plan — proposed by the model" },
+  { value: "agent", label: "agent — proposed by the model" },
 ];
 
 const APPROVAL_ACTIONS = ["send_email", "share_file", "transfer_payment", "update_record", "delete_record"];
@@ -88,7 +89,6 @@ export default function Firewall() {
         intent: form.intent,
         parameters,
         source_scan_ids: form.source_scan_id ? [form.source_scan_id] : [],
-        requested_by: "ai-assistant",
       };
       const decision = await api.validateAction(payload);
       setResult(decision);
@@ -137,10 +137,11 @@ export default function Firewall() {
     }
   }
 
+  // The API accepts "approve" | "reject".
   async function decide(id, decision) {
     try {
-      await api.decideApproval(id, decision, `${decision === "approve" ? "Approved" : "Denied"} from the PromptShield console.`);
-      success(`Request ${decision === "approve" ? "approved" : "denied"}.`);
+      await api.decideApproval(id, decision, `${decision === "approve" ? "Approved" : "Rejected"} from the PromptShield console.`);
+      success(`Request ${decision === "approve" ? "approved" : "rejected"}.`);
       approvals.reload();
       actions.reload();
     } catch (err) {
@@ -251,8 +252,17 @@ export default function Firewall() {
                 <div className="mt-2 space-y-1">
                   {result.rule_results.map((rule) => (
                     <div key={rule.rule} className="flex items-center gap-2 rounded border border-white/5 bg-white/[0.02] px-2 py-1">
-                      {rule.passed ? <CheckCircle2 size={11} className="text-emerald-300" /> : <XCircle size={11} className="text-rose-300" />}
+                      {rule.status === "pass" ? (
+                        <CheckCircle2 size={11} className="text-emerald-300" />
+                      ) : rule.status === "warn" ? (
+                        <ShieldAlert size={11} className="text-amber-300" />
+                      ) : (
+                        <XCircle size={11} className="text-rose-300" />
+                      )}
                       <span className="mono text-[10.5px] text-slate-400">{rule.rule}</span>
+                      <Badge tone={rule.status === "pass" ? "low" : rule.status === "warn" ? "medium" : "critical"}>
+                        {pretty(rule.status)}
+                      </Badge>
                       <span className="ml-auto truncate text-[10.5px] text-slate-500">{rule.detail}</span>
                     </div>
                   ))}
@@ -405,8 +415,8 @@ export default function Firewall() {
                       <button type="button" className="btn btn-ghost !py-1 !px-2 !text-[10.5px] !text-emerald-200" onClick={() => decide(approval.id, "approve")}>
                         <CheckCircle2 size={11} /> Approve
                       </button>
-                      <button type="button" className="btn btn-ghost !py-1 !px-2 !text-[10.5px] !text-rose-200" onClick={() => decide(approval.id, "deny")}>
-                        <XCircle size={11} /> Deny
+                      <button type="button" className="btn btn-ghost !py-1 !px-2 !text-[10.5px] !text-rose-200" onClick={() => decide(approval.id, "reject")}>
+                        <XCircle size={11} /> Reject
                       </button>
                     </div>
                   </div>
