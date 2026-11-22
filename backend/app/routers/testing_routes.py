@@ -16,7 +16,11 @@ def run_evaluation(payload: TestingRunRequest, user: dict = Depends(auth.require
     This measures the *current* shipped model and rules. It is evaluation, not
     online learning: no weights are updated by this endpoint.
     """
-    result = testing.run_evaluation(subsets=payload.subsets, mutate=payload.mutate, compare_baseline=payload.compare_baseline, user=user)
+    result = testing.run_evaluation(
+        user=user,
+        persist=True,
+        limit_suites=None if not payload.subsets or "all" in payload.subsets else payload.subsets,
+    )
     db.audit(
         user,
         "testing.run",
