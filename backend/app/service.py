@@ -93,35 +93,87 @@ def get_scan(scan_id: str) -> Optional[dict]:
     return db.get("scans", scan_id)
 
 
-def list_scans(limit: int = 50, source_type: Optional[str] = None, actor: Optional[str] = None) -> list[dict]:
+def list_scans(
+    limit: int = 50,
+    source_type: Optional[str] = None,
+    actor: Optional[str] = None,
+    decision: Optional[str] = None,
+) -> list[dict]:
     predicate = None
-    if source_type or actor:
+    if source_type or actor or decision:
         def predicate(doc: dict) -> bool:  # noqa: E306
             if source_type and doc.get("source_type") != source_type:
                 return False
             if actor and doc.get("actor") != actor:
+                return False
+            if decision and doc.get("decision") != decision:
                 return False
             return True
 
     return db.get_store().find("scans", predicate=predicate, limit=limit)
 
 
-def list_threats(limit: int = 100, status: Optional[str] = None, band: Optional[str] = None) -> list[dict]:
+def list_threats(
+    limit: int = 100,
+    status: Optional[str] = None,
+    risk_band: Optional[str] = None,
+    category: Optional[str] = None,
+) -> list[dict]:
     def predicate(doc: dict) -> bool:  # noqa: E306
         if status and doc.get("status") != status:
             return False
-        if band and doc.get("risk_band") != band:
+        if risk_band and doc.get("risk_band") != risk_band:
+            return False
+        if category and category not in (doc.get("threat_categories") or []):
             return False
         return True
 
-    return db.get_store().find("threats", predicate=predicate if (status or band) else None, limit=limit)
+    return db.get_store().find("threats", predicate=predicate if (status or risk_band or category) else None, limit=limit)
 
 
-def update_threat_status(threat_id: str, status: str, actor: dict) -> Optional[dict]:
-    updated = db.get_store().update("threats", threat_id, {"status": status, "reviewed_by": actor.get("email")})
+def update_threat_status(
+    threat_id: str, status: str, actor: dict, note: str = ""
+) -> Optional[dict]:
+    updated = db.get_store().update(
+        "threats",
+        threat_id,
+        {"status": status, "reviewed_by": actor.get("email"), "review_note": note[:500]},
+    )
     if updated:
-        db.audit(actor, "threat.status", f"Threat {threat_id} marked {status}", {"threat_id": threat_id})
+        db.audit(actor, "threat.status", f"Threat {threat_id} marked {status}", {"threat_id": threat_id, "note": note[:200]})
     return updated
+
+
+# --- Firewall read helpers (thin wrappers over firewall.py) ----------------
+def list_actions(limit: int = 50) -> list[dict]:
+    from . import firewall
+
+    return firewall.list_actions(limit=limit)
+
+
+def list_approvals(status: Optional[str] = None, limit: int = 50) -> list[dict]:
+    from . import firewall
+
+    return firewall.list_approvals(status=status, limit=limit)
+
+
+def get_approval(approval_id: str) -> Optional[dict]:
+    return db.get("approvals", approval_id)
+
+
+def decide_approval(approval_id: str, decision: str, user: dict, note: str = "") -> dict:
+    from . import firewall
+
+    return firewall.decide_approval(approval_id, decision == "approve", user, note)
+
+
+# --- Testing laboratory history -------------------------------------------
+def list_testing_runs(limit: int = 20) -> list[dict]:
+    return db.get_store().find("test_runs", limit=limit)
+
+
+def get_testing_run(run_id: str) -> Optional[dict]:
+    return db.get("test_runs", run_id)
 
 
 def dashboard_statistics() -> dict:
@@ -223,7 +275,7 @@ def dashboard_statistics() -> dict:
     }
 
 
-def analytics() -> dict:
+def analytics(days: int = 14) -> dict:
     stats = dashboard_statistics()
     store = db.get_store()
     runs = store.find("test_runs", limit=1)
