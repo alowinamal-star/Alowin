@@ -25,7 +25,7 @@ from typing import Callable, Iterable, Optional
 
 from fastapi import Depends, HTTPException, Request, status
 
-from . import db
+from . import config, db
 from .config import RATE_LIMIT_PER_MINUTE, SECRET_KEY_ENV, TOKEN_TTL_SECONDS
 
 ROLES = ("admin", "analyst", "viewer")

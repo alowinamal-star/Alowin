@@ -63,7 +63,7 @@ RULES: tuple[Rule, ...] = (
         "Override previous instructions",
         [
             r"ignore\s+(?:all\s+|any\s+)?(?:of\s+)?(?:the\s+)?(?:previous|prior|above|earlier|preceding|foregoing)\s+(?:instructions?|prompts?|rules?|directives?|guidelines?)",
-            r"disregard\s+(?:all\s+|any\s+)?(?:the\s+)?(?:previous|prior|above|earlier|system)\s+(?:instructions?|rules?|prompts?|guidelines?)",
+            r"disregard\s+(?:all\s+|any\s+)?(?:the\s+)?(?:previous|prior|above|earlier|system)\s+(?:instructions?|rules?|prompts?|guidelines?|messages?|directives?)",
             r"forget\s+(?:everything|all|anything)\s+(?:above|before|previous|you\s+were\s+told)",
             r"ignore\s+(?:your|the)\s+(?:system\s+)?(?:prompt|instructions?|guidelines?|rules?)",
             r"override\s+(?:your|the|all)\s+(?:system\s+)?(?:instructions?|prompts?|rules?|polic(?:y|ies)|safety|guardrails?)",
