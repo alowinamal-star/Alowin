@@ -21,7 +21,10 @@ DIM = 1 << 18  # 262,144 hashed buckets
 _TOKEN_RE = re.compile(r"\w+", re.UNICODE)
 _URL_RE = re.compile(r"https?://\S+", re.IGNORECASE)
 _EMAIL_RE = re.compile(r"\S+@\S+\.\w+")
-_DELIM_RE = re.compile(r"<\|[^|]{1,20}\|>|\[/?INST\]|<\s*/?\s*system\s*>|(?m)^\s*#{2,}\s*system", re.IGNORECASE)
+_DELIM_RE = re.compile(
+    r"<\|[^|]{1,20}\|>|\[/?INST\]|<\s*/?\s*system\s*>|^\s*#{2,}\s*system",
+    re.IGNORECASE | re.MULTILINE,
+)
 _IMPERATIVE_RE = re.compile(
     r"\b(?:ignore|disregard|reveal|send|forward|delete|transfer|execute|print|output|share|"
     r"approve|bypass|disable|grant|repeat|email|upload|leak)\b",
