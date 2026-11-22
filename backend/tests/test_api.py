@@ -200,7 +200,7 @@ def test_testing_laboratory_run(client, admin_headers):
     assert 0 <= overall["precision"] <= 1
     assert 0 <= overall["recall"] <= 1
     assert overall["tp"] + overall["tn"] + overall["fp"] + overall["fn"] > 0
-    assert body["baseline"]["recall"] >= 0
+    assert body["keyword_baseline_overall"]["recall"] >= 0
     assert body["notes"], "limitations must be stated alongside metrics"
 
 
