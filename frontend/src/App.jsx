@@ -10,7 +10,7 @@ import Firewall from "./pages/Firewall";
 import History from "./pages/History";
 import Login from "./pages/Login";
 import Settings from "./pages/Settings";
-import Testing from "./pages/Testing";
+import TestingLab from "./pages/TestingLab";
 import Threats from "./pages/Threats";
 import UrlScanner from "./pages/UrlScanner";
 
@@ -55,7 +55,7 @@ export default function App() {
         <Route path="/analytics" element={<Analytics />} />
         <Route path="/cross-document" element={<CrossDocument />} />
         <Route path="/firewall" element={<Firewall />} />
-        <Route path="/testing" element={<Testing />} />
+        <Route path="/testing" element={<TestingLab />} />
         <Route path="/settings" element={<Settings />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
