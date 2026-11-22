@@ -1,10 +1,11 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
 
 // The SPA is served by the FastAPI process in production; during development
 // Vite proxies /api to the local uvicorn server so both stay same-origin.
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), tailwindcss()],
   server: {
     host: "127.0.0.1",
     port: 5173,
