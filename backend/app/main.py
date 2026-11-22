@@ -7,6 +7,7 @@ whole product runs as one process on one port.
 from __future__ import annotations
 
 import logging
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -37,21 +38,16 @@ Scores are application-specific heuristics, not a universal security standard.
 """
 
 
-def _lifespan(app: FastAPI):
-    from contextlib import asynccontextmanager
-
-    @asynccontextmanager
-    async def lifespan(_: FastAPI):
-        db.ensure_collections()
-        auth.seed_users()
-        try:
-            seed.seed_demo_scans()
-        except Exception:  # pragma: no cover - seeding must never block startup
-            log.exception("Demo seeding failed; starting with the existing data set")
-        log.info("%s %s ready (storage=%s)", config.APP_NAME, config.APP_VERSION, db.get_store().backend_name)
-        yield
-
-    return lifespan(app)
+@asynccontextmanager
+async def lifespan(_: FastAPI):
+    db.ensure_collections()
+    auth.seed_users()
+    try:
+        seed.seed_demo_scans()
+    except Exception:  # pragma: no cover - seeding must never block startup
+        log.exception("Demo seeding failed; starting with the existing data set")
+    log.info("%s %s ready (storage=%s)", config.APP_NAME, config.APP_VERSION, db.get_store().backend_name)
+    yield
 
 
 app = FastAPI(
@@ -61,7 +57,7 @@ app = FastAPI(
     docs_url="/api/docs",
     redoc_url=None,
     openapi_url="/api/openapi.json",
-    lifespan=_lifespan(app),
+    lifespan=lifespan,
 )
 
 if config.CORS_ORIGINS:
