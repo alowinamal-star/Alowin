@@ -40,6 +40,10 @@ SECRET_KEY_ENV = os.environ.get("PROMPTSHIELD_SECRET", "").strip()
 TOKEN_TTL_SECONDS = int(os.environ.get("TOKEN_TTL_SECONDS", str(8 * 3600)))
 SEED_ADMIN_EMAIL = os.environ.get("SEED_ADMIN_EMAIL", "admin@promptshield.ai").strip()
 SEED_ADMIN_PASSWORD = os.environ.get("SEED_ADMIN_PASSWORD", "Admin@12345")
+# Demo analyst/viewer accounts for the hackathon walkthrough. Set
+# SEED_DEMO_USERS=0 to disable them and the /api/auth/demo-accounts endpoint.
+SEED_DEMO_USERS = os.environ.get("SEED_DEMO_USERS", "1") != "0"
+SEED_DEMO_PASSWORD = os.environ.get("SEED_DEMO_PASSWORD", "Demo@12345")
 
 # --- Limits --------------------------------------------------------------
 MAX_UPLOAD_BYTES = int(os.environ.get("MAX_UPLOAD_BYTES", str(5 * 1024 * 1024)))
