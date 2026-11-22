@@ -81,6 +81,14 @@ TRANSFER_HARD_LIMIT = float(os.environ.get("TRANSFER_HARD_LIMIT", "10000"))
 APP_NAME = "PromptShield AI"
 APP_VERSION = "1.0.0"
 
+# Browser origins allowed to call the API cross-origin (comma separated).
+# The bundled SPA is served same-origin, so this stays empty by default.
+CORS_ORIGINS = [o.strip() for o in os.environ.get("CORS_ORIGINS", "").split(",") if o.strip()]
+
+# Seed the demonstration scans (real pipeline runs) on first boot so the
+# dashboard is meaningful immediately. Set SEED_DEMO_SCANS=0 to start empty.
+SEED_DEMO_SCANS = os.environ.get("SEED_DEMO_SCANS", "1") != "0"
+
 RISK_BANDS = [
     (0, 29, "low"),
     (30, 59, "medium"),
