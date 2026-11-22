@@ -50,7 +50,7 @@ Cross-Document, Firewall & Actions, Testing Laboratory, User Settings.**
 # 1. Backend
 cd backend
 python3 -m venv .venv && source .venv/bin/activate
-pip install -r requirements-dev.txt
+pip install -r requirements.txt -r requirements-dev.txt
 uvicorn app.main:app --reload --port 8000     # API + docs at http://127.0.0.1:8000/api/docs
 
 # 2. Frontend (second terminal) — proxies /api to :8000
@@ -95,6 +95,19 @@ real deployment.** See `.env.example` for every supported variable.
 ```bash
 cd backend && python -m pytest -q            # 45 tests: detection, firewall, API, extraction
 cd frontend && npm run build                 # production build must succeed
+```
+
+### Dependency locking
+
+`backend/requirements.lock` is the fully resolved set (direct + transitive versions)
+that the container installs and that dependency scanning can resolve completely;
+`frontend/package-lock.json` does the same for npm. Regenerate the Python lock after
+changing `requirements.txt`:
+
+```bash
+cd backend
+python3 -m venv /tmp/lockenv && /tmp/lockenv/bin/pip install -r requirements.txt
+/tmp/lockenv/bin/pip freeze | sort > requirements.lock
 ```
 
 Coverage includes: benign-vs-malicious detection, multilingual and mixed-language

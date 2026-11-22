@@ -25,10 +25,12 @@ WORKDIR /app
 ENV PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1
 
-COPY backend/requirements.txt ./requirements.txt
+# Install from the fully resolved lockfile: the image gets exactly the direct and
+# transitive versions that dependency scanning can resolve, not a floating set.
+COPY backend/requirements.lock ./requirements.lock
 # pymongo/bson publish no musl wheels, so compile them and drop the toolchain.
 RUN apk add --no-cache --virtual .build-deps gcc musl-dev python3-dev libffi-dev \
-    && pip install --no-cache-dir -r requirements.txt \
+    && pip install --no-cache-dir -r requirements.lock \
     && apk del .build-deps
 
 # Application code + the trained classifier artifact.
