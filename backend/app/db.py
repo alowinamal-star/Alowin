@@ -65,6 +65,11 @@ class Store:
     def health(self) -> dict:
         return {"backend": self.backend, "ok": True}
 
+    @property
+    def backend_name(self) -> str:
+        """Human-readable storage backend name ("sqlite" or "mongodb")."""
+        return self.backend
+
 
 class SqliteStore(Store):
     backend = "sqlite"
