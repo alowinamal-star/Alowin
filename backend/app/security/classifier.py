@@ -228,7 +228,7 @@ class Detector:
             "scan_id": scan_id,
             "source_name": source_name,
             "source_type": source_type,
-            "languages": languages,
+            "languages_detected": languages,
             "risk_score": components["score"],
             "risk_band": components["band"],
             "decision": decision,
@@ -236,7 +236,7 @@ class Detector:
             "summary": risk.summarize(
                 components["band"], decision, components["categories"], components["score"]
             ),
-            "categories": components["categories"],
+            "threat_categories": components["categories"],
             "category_labels": [CATEGORY_LABELS.get(c, c) for c in components["categories"]],
             "evidence": evidence,
             "reasoning": risk.build_reasoning(

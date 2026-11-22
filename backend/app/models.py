@@ -96,33 +96,45 @@ class MultiDocumentRequest(BaseModel):
 class EvidenceOut(BaseModel):
     rule_id: str
     category: str
-    label: str
+    category_label: str
     severity: str
-    language: str
+    label: str
+    reason: str
     matched_text: str
-    context: str
     start: int
     end: int
+    language: str
+    view: str
     weight: float
     context_factor: float
-    reason: str
-    in_quote: bool = False
+    mitigated: bool = False
+    context_notes: list[str] = Field(default_factory=list)
+    occurrences: int = 1
 
 
 class AnalysisOut(BaseModel):
     risk_score: float
     risk_band: str
     decision: Decision
+    decision_label: str
     threat_categories: list[str]
+    category_labels: list[str]
     evidence: list[EvidenceOut]
-    signals: dict[str, Any]
+    scores: dict[str, Any]
     model: dict[str, Any]
     reasoning: list[str]
     recommended_action: str
+    summary: str
+    languages_detected: list[str]
+    obfuscation: dict[str, Any]
+    hidden_segments: list[str] = Field(default_factory=list)
+    document_context: dict[str, Any]
     sanitized_content: str
     untrusted_envelope: str
-    languages_detected: list[str]
-    summary: str
+    untrusted_banner: str
+    text_preview: str
+    characters: int
+    word_count: int
 
 
 class ScanOut(BaseModel):
