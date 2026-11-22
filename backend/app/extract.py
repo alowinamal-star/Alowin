@@ -24,6 +24,7 @@ from urllib.parse import urljoin, urlparse
 
 import httpx
 from bs4 import BeautifulSoup
+from bs4.element import Comment
 
 from . import config
 
