@@ -1,6 +1,6 @@
 import { AlertTriangle, CheckCircle2, Copy, Info, Loader2, RefreshCw, ShieldAlert, X } from "lucide-react";
 import { useState } from "react";
-import { RISK_BADGE, decisionClass, pretty } from "./api";
+import { RISK_BADGE, decisionClass, pretty } from "../api";
 
 export function Card({ className = "", children, hover = false, ...rest }) {
   return (
