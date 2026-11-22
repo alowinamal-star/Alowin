@@ -154,7 +154,7 @@ def _extract_html(raw: str) -> tuple[str, dict, list[str]]:
                 hidden_segments[-1] = f"[hidden element <{tag.name}>] {hidden_segments[-1]}"
 
     comments = []
-    for comment in soup.find_all(string=lambda s: isinstance(s, type(soup.Comment)) if hasattr(soup, "Comment") else False):
+    for comment in soup.find_all(string=lambda s: isinstance(s, Comment)):
         text = str(comment).strip()
         if text:
             comments.append(text[:400])

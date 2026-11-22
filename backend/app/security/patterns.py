@@ -99,7 +99,7 @@ RULES: tuple[Rule, ...] = (
             r"(?:leak|exfiltrate|exfil)\s+(?:the\s+)?(?:data|information|records|credentials|secrets|database)",
             r"repeat\s+(?:the\s+)?(?:text|words|content|instructions)\s+(?:above|before\s+this)",
             r"send\s+(?:this|the)\s+(?:conversation|chat|transcript|context)\s+to",
-            r"(?:include|attach)\s+(?:all|the)\s+(?:user|customer)\s+(?:records|data|emails)\s+in",
+            r"(?:export|dump|send|email|forward|upload|post|share|transmit)\b[^.\n]{0,80}\b(?:database|dataset|api\s+keys?|credentials|passwords?|secrets?|customer\s+(?:data|records)|internal\s+documents?)\b[^.\n]{0,40}\b(?:to|into|at)\s+(?:[\w.+-]+@[\w.-]+|https?://)",
         ],
         reason="Content asks for protected information to be disclosed or transmitted.",
     ),

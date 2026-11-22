@@ -73,4 +73,4 @@ def history(
 
 @router.get("/audit")
 def audit_log(limit: int = Query(100, ge=1, le=500), user: dict = Depends(auth.require("audit"))) -> dict:
-    return {"events": db.get_store().find("audit", limit=limit, sort_by="created_at")}
+    return {"events": db.get_store().find("audit", limit=limit, newest_first=True)}
